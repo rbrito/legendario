@@ -11,7 +11,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 KEY_RANGE = range(random.randint(24,32))
-KEY_CHARS = string.ascii_letters;
+KEY_CHARS = string.ascii_letters
 
 # Database containing all labels to be appended to the user's photo. The label
 # id must be called image_id so that DbFunctions can work on both Labels and
@@ -72,7 +72,7 @@ class GetPhoto(webapp.RequestHandler):
           image_type = image.image_type
         self.response.headers['Content-Type'] = image_type
         self.response.out.write(image.content)
-        return;
+        return
 
     self.response.headers['Content-Type'] = 'text/html' 
     self.response.set_status(404, 'Not Found') 
@@ -124,7 +124,7 @@ class Legendario(webapp.RequestHandler):
     uploaded_image = self.request.POST['source_image']
     if uploaded_image == None or uploaded_image == '':
       self.response.out.write(RenderMainPage(error_message='Selecione uma foto.'))
-      return;
+      return
 
     # extracts the photo type from the uploaded image
     content_type = uploaded_image.type
@@ -132,24 +132,24 @@ class Legendario(webapp.RequestHandler):
     if image_type == None:
       self.response.out.write(
         RenderMainPage(error_message='Tipo de imagem desconhecido. Use imagens JPEG, PNG ou GIF'))
-      return;
+      return
 
     image_content = self.request.get('source_image')
     if len(image_content) > (1 << 20): # 1M
       self.response.out.write(RenderMainPage(
             error_message='Sua foto deve ter menos de 1 MB.'))
-      return;
+      return
  
     label_name = self.request.get('label_name')
     if label_name == None or label_name == '':
       self.response.out.write(RenderMainPage(error_message='Escolha um dos labels.'))
-      return;
+      return
   
     label = DbFunctions().getImage('LabelsDb', label_name)
     if label == None:
       self.response.out.write(RenderMainPage(
         error_message='Label \'%s\' nao encontrado' % label_name))
-      return;
+      return
 
     imageDb = ImageDb()
     image = images.Image(image_content)
@@ -188,14 +188,14 @@ class Legendario(webapp.RequestHandler):
                                 images.TOP_RIGHT) ], image.width,
                                image.height, 0, images.JPEG)
 
-    squared_width = image.width;
-    squared_height = image.height + label_img.height;
+    squared_width = image.width
+    squared_height = image.height + label_img.height
 
     if (squared_width > squared_height): squared_height = squared_width
     else: squared_width = squared_height
 
     woffset = (squared_width - image.width) / 2
-    squared_xpos = -1 * woffset;
+    squared_xpos = -1 * woffset
     hoffset = (squared_height - (image.height + label_img.height))/2
     squared_ypos = hoffset
 
@@ -215,7 +215,7 @@ class Legendario(webapp.RequestHandler):
         muito grande depois de acrescentar a legenda. Reduza o tamanho da sua
         imagem original. Se isso nao resolver, tente reduzir suas dimensoes ou
         sua resolucao. Se nada funcionar, mande um email para ademirao@gmail.com'''))
-        return;
+        return
 
     no_crop_image_key = DbFunctions().addImage(no_crop_image)
     crop_image_key = DbFunctions().addImage(crop_image)
@@ -240,7 +240,7 @@ class AddLabel(webapp.RequestHandler):
     label_type = getImageTypeFromContentType(content_type)
     if label_type == None:
       self.response.out.write('Tipo de imagem desconhecido. Use imagens JPEG, PNG ou GIF')
-      return;
+      return
 
     logging.info(content_type)
     label_img = images.Image(self.request.get('source_label'))
